@@ -1,0 +1,13 @@
+{
+  "name": "NusaPulse",
+  "description": "Platform sosial-ekonomi hiperlokal futuristik yang membuat kota terasa hidup, terhubung, dan cerdas.",
+  "requestFramePermissions": [
+    "geolocation"
+  ],
+  "majorCapabilities": [
+    "Social Networking",
+    "Local Job Discovery",
+    "AI Companion",
+    "Real-time City Pulse"
+  ]
+}
