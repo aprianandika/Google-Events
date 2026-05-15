@@ -12,13 +12,16 @@ interface RichZone {
   position: { lat: number; lng: number };
 }
 
-const API_KEY =
-  process.env.GOOGLE_MAPS_PLATFORM_KEY ||
+const API_KEY = (
   (import.meta as any).env?.VITE_GOOGLE_MAPS_PLATFORM_KEY ||
+  (process as any).env?.GOOGLE_MAPS_PLATFORM_KEY ||
   (globalThis as any).GOOGLE_MAPS_PLATFORM_KEY ||
-  '';
+  'AIzaSyBR7agIhR6B1FAeZm7hcWrF1Ha9u9qeVSU'
+).trim();
 
-const hasValidKey = Boolean(API_KEY) && API_KEY !== 'YOUR_API_KEY';
+const hasValidKey = Boolean(API_KEY) && 
+  API_KEY.startsWith('AIza') && 
+  !['YOUR_API_KEY', 'undefined', 'null', ''].includes(API_KEY);
 
 const RICH_ZONES: RichZone[] = [
   { id: '1', name: 'Jakarta', richness: 'Teknologi', description: 'Pusat inovasi digital dan pusat data nasional.', energy: 98, position: { lat: -6.2088, lng: 106.8456 } },
@@ -33,7 +36,7 @@ const RICH_ZONES: RichZone[] = [
   { id: '10', name: 'Magelang', richness: 'Budaya', description: 'Kota paku tanah Jawa dengan kekayaan warisan sejarah dunia.', energy: 81, position: { lat: -7.4706, lng: 110.2177 } },
 ];
 
-const MAP_ID = "dark_mode_map"; // In production you'd use a real Map ID from console
+const MAP_ID = "DEMO_MAP_ID"; // Using a demo Map ID for Advanced Markers compatibility
 
 export const MacroMapView = ({ onBack, onSelectCity }: { onBack: () => void, onSelectCity: (cityName: string) => void }) => {
   const [selectedZone, setSelectedZone] = useState<RichZone | null>(null);
@@ -43,7 +46,7 @@ export const MacroMapView = ({ onBack, onSelectCity }: { onBack: () => void, onS
       <div className="fixed inset-0 bg-obsidian z-[210] flex items-center justify-center p-8 text-center">
         <div className="glass p-8 rounded-[40px] max-w-lg border-cyber-lime/20">
           <h2 className="text-2xl font-display font-black text-cyber-lime mb-4">Google Maps API Key Required</h2>
-          <p className="text-white/60 mb-6">Untuk melihat visualisasi peta kekayaan nusantara secara real-time, Anda perlu menambahkan API Key.</p>
+          <p className="text-white/60 mb-6 italic text-sm">Catatan: Pastikan Anda menggunakan API Key dari <strong>Google Maps Platform</strong>, bukan Gemini API Key.</p>
           
           <div className="space-y-4 text-left mb-8">
             <div className="flex gap-4 items-start">
@@ -52,11 +55,15 @@ export const MacroMapView = ({ onBack, onSelectCity }: { onBack: () => void, onS
             </div>
             <div className="flex gap-4 items-start">
               <div className="w-8 h-8 rounded-full bg-cyber-lime text-obsidian flex items-center justify-center font-bold flex-shrink-0">2</div>
-              <p className="text-sm text-white/80">Buka <strong>Settings</strong> (ikon ⚙️) → <strong>Secrets</strong></p>
+              <p className="text-sm text-white/80">Aktifkan <strong>Maps JavaScript API</strong> di Library API.</p>
             </div>
             <div className="flex gap-4 items-start">
               <div className="w-8 h-8 rounded-full bg-cyber-lime text-obsidian flex items-center justify-center font-bold flex-shrink-0">3</div>
-              <p className="text-sm text-white/80">Tambahkan secret <code>GOOGLE_MAPS_PLATFORM_KEY</code> dan paste key Anda.</p>
+              <p className="text-sm text-white/80">Buka <strong>Settings</strong> (ikon ⚙️) → <strong>Secrets</strong></p>
+            </div>
+            <div className="flex gap-4 items-start">
+              <div className="w-8 h-8 rounded-full bg-cyber-lime text-obsidian flex items-center justify-center font-bold flex-shrink-0">4</div>
+              <p className="text-sm text-white/80">Tambahkan secret <code>GOOGLE_MAPS_PLATFORM_KEY</code>.</p>
             </div>
           </div>
           
