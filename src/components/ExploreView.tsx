@@ -46,7 +46,7 @@ const EXPLORE_ITEMS = [
   }
 ];
 
-export const ExploreView = ({ onOpenMap }: { onOpenMap?: () => void }) => {
+export const ExploreView = ({ cityName = 'Jakarta', onOpenMap }: { cityName?: string; onOpenMap?: () => void }) => {
   const [activeCategory, setActiveCategory] = useState('all');
   const [votedItems, setVotedItems] = useState<string[]>(['v1']);
 
@@ -54,16 +54,82 @@ export const ExploreView = ({ onOpenMap }: { onOpenMap?: () => void }) => {
     setVotedItems(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
   };
 
-  const SUGGESTIONS = [
-    { id: 'v1', title: 'Car Free Tech Night', description: 'Uji coba teknologi mikro-mobilitas di sepanjang Sudirman.', votes: 421 },
-    { id: 'v2', title: 'Open Air AI Talk', description: 'Diskusi senja tentang etika AI di Taman Ismail Marzuki.', votes: 289 },
-    { id: 'v3', title: 'Mural Digital Mapping', description: 'Kompetisi seni proyeksi pada gedung budaya di Menteng.', votes: 154 },
-  ];
+  const CITY_DATA: Record<string, { zones: any[], explore: any[], suggestions: any[] }> = {
+    'Jakarta': {
+      zones: [
+        { name: 'SCBD', vibe: 'Energetic', pulse: 98, color: 'cyber-lime' },
+        { name: 'Senopati', vibe: 'Trendy', pulse: 85, color: 'blue-500' },
+        { name: 'Menteng', vibe: 'Elite', pulse: 62, color: 'white' },
+      ],
+      explore: [
+        { id: 'e1', type: 'event', title: 'Jakarta Future Tech Expo', subtitle: 'Pameran inovasi terbesar di JIExpo Kemayoran.', tags: ['Teknologi', 'Pameran', 'Besar'], energy: 95 },
+        { id: 'e2', type: 'community', title: 'Gowes Malam Sudirman', subtitle: 'Komunitas pesepeda malam yang melintasi jantung kota.', tags: ['Olahraga', 'Malam', 'Gratis'], energy: 72 },
+        { id: 'e3', type: 'job', title: 'Product Designer (Contract)', subtitle: 'Startup AI di Kuningan mencari desainer paruh waktu.', tags: ['Kontrak', 'Kuningan', 'UI/UX'], energy: 68 },
+      ],
+      suggestions: [
+        { id: 'v1', title: 'Car Free Tech Night', description: 'Uji coba teknologi mikro-mobilitas di sepanjang Sudirman.', votes: 421 },
+        { id: 'v2', title: 'Open Air AI Talk', description: 'Diskusi senja tentang etika AI di Taman Ismail Marzuki.', votes: 289 },
+        { id: 'v3', title: 'Mural Digital Mapping', description: 'Kompetisi seni proyeksi pada gedung budaya di Menteng.', votes: 154 },
+      ]
+    },
+    'Karawang': {
+      zones: [
+        { name: 'KIIC', vibe: 'Industrial', pulse: 95, color: 'cyber-lime' },
+        { name: 'Galuh Mas', vibe: 'Lifestyle', pulse: 78, color: 'blue-500' },
+        { name: 'Suryacipta', vibe: 'Tech-Factory', pulse: 88, color: 'white' },
+      ],
+      explore: [
+        { id: 'k1', type: 'job', title: 'Industrial IoT Specialist', subtitle: 'Membangun smart factory di kawasan industri Karawang.', tags: ['Industry 4.0', 'IoT', 'KIIC'], energy: 96 },
+        { id: 'k2', type: 'event', title: 'Manufacturing Summit 2024', subtitle: 'Diskusi panel masa depan industri hijau di Karawang.', tags: ['Green Industry', 'Networking'], energy: 82 },
+        { id: 'k3', type: 'community', title: 'Karawang Tech Runners', subtitle: 'Komunitas lari di tengah kawasan industri.', tags: ['Fitness', 'Community'], energy: 65 },
+      ],
+      suggestions: [
+        { id: 'kv1', title: 'Solar Powered Workers Hub', description: 'Pembangunan ruang publik dengan energi surya untuk pekerja industri.', votes: 312 },
+        { id: 'kv2', title: 'Industrial Tourism Trail', description: 'Rute wisata sejarah perkembangan industri di Indonesia.', votes: 198 },
+      ]
+    },
+    'Magelang': {
+      zones: [
+        { name: 'Borobudur', vibe: 'Heritage', pulse: 99, color: 'cyber-lime' },
+        { name: 'Muntilan', vibe: 'Culinary', pulse: 72, color: 'blue-500' },
+        { name: 'Menoreh', vibe: 'Nature', pulse: 84, color: 'white' },
+      ],
+      explore: [
+        { id: 'm1', type: 'event', title: 'Vesak Digital Glow', subtitle: 'Instalasi seni cahaya digital di pelataran Borobudur.', tags: ['Culture', 'Digital Art'], energy: 94 },
+        { id: 'm2', type: 'community', title: 'Magelang Creative Circle', subtitle: 'Wadah pengrajin lokal untuk go-digital.', tags: ['Handicraft', 'Digital Marketing'], energy: 88 },
+        { id: 'm3', type: 'job', title: 'Heritage Conservation Lead', subtitle: 'Posisi strategis untuk pelestarian cagar budaya Magelang.', tags: ['History', 'Gov', 'Magelang'], energy: 76 },
+      ],
+      suggestions: [
+        { id: 'mv1', title: 'Ancient Virtual Tour', description: 'Pengembangan aplikasi VR untuk melihat sejarah Borobudur masa lampau.', votes: 456 },
+        { id: 'mv2', title: 'Organic Farm Collective', description: 'Inisiatif perkebunan organik modern di kaki bukit Menoreh.', votes: 243 },
+      ]
+    },
+    'Bandung': {
+      zones: [
+        { name: 'Dago', vibe: 'Creative', pulse: 92, color: 'cyber-lime' },
+        { name: 'Braga', vibe: 'Classic', pulse: 88, color: 'blue-500' },
+        { name: 'Ciumbuleuit', vibe: 'Chill', pulse: 75, color: 'white' },
+      ],
+      explore: [
+        { id: 'b1', type: 'job', title: 'Creative Strategist', subtitle: 'Startup fashion terbesar di Bandung mencari nakhoda kreatif.', tags: ['Fashion', 'Bandung', 'Remote-Hybrid'], energy: 91 },
+        { id: 'b2', type: 'community', title: 'Indie Dev Bandung', subtitle: 'Kumpul rutin pengembang game indie di Paris Van Java.', tags: ['Game Dev', 'Indie'], energy: 84 },
+      ],
+      suggestions: [
+        { id: 'bv1', title: 'Creative Street Art Festival', description: 'Festival seni jalanan tahunan berskala internasional di Braga.', votes: 567 },
+      ]
+    }
+  };
+
+  const currentData = CITY_DATA[cityName] || CITY_DATA['Jakarta'];
 
   return (
     <div className="px-6 pt-24 pb-32">
       {/* Search Header */}
       <div className="mb-8">
+        <div className="mb-4">
+          <span className="text-[10px] font-mono text-cyber-lime uppercase tracking-[0.2em]">Menjelajahi Kota</span>
+          <h2 className="text-3xl font-display font-black text-white">{cityName}</h2>
+        </div>
         <div className="relative mb-6">
           <input 
             type="text" 
@@ -102,11 +168,7 @@ export const ExploreView = ({ onOpenMap }: { onOpenMap?: () => void }) => {
           <span className="text-[10px] font-mono text-white/20 uppercase">Real-time Data</span>
         </div>
         <div className="flex gap-4 overflow-x-auto pb-4 no-scrollbar">
-          {[
-            { name: 'SCBD', vibe: 'Energetic', pulse: 98, color: 'cyber-lime' },
-            { name: 'Senopati', vibe: 'Trendy', pulse: 85, color: 'blue-500' },
-            { name: 'Menteng', vibe: 'Elite', pulse: 62, color: 'white' },
-          ].map((zone, i) => (
+          {currentData.zones.map((zone, i) => (
             <motion.div 
               key={zone.name}
               initial={{ opacity: 0, x: 20 }}
@@ -146,7 +208,7 @@ export const ExploreView = ({ onOpenMap }: { onOpenMap?: () => void }) => {
         </header>
 
         <div className="space-y-4">
-          {SUGGESTIONS.map((v, i) => {
+          {currentData.suggestions.map((v, i) => {
             const isVoted = votedItems.includes(v.id);
             return (
               <motion.div 
@@ -190,7 +252,7 @@ export const ExploreView = ({ onOpenMap }: { onOpenMap?: () => void }) => {
           </button>
         </div>
         <div className="space-y-4">
-          {EXPLORE_ITEMS
+          {currentData.explore
             .filter(item => activeCategory === 'all' || item.type === activeCategory)
             .map(item => (
               <div key={item.id}>

@@ -9,7 +9,7 @@ interface Message {
   text: string;
 }
 
-export const AICompanion = () => {
+export const AICompanion = ({ cityName = 'Jakarta' }: { cityName?: string }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -18,11 +18,11 @@ export const AICompanion = () => {
 
   useEffect(() => {
     try {
-      chatRef.current = startGeminiChat();
+      chatRef.current = startGeminiChat(cityName);
     } catch (error) {
       console.error("Failed to initialize Gemini chat:", error);
     }
-  }, []);
+  }, [cityName]);
 
   useEffect(() => {
     if (scrollRef.current) {

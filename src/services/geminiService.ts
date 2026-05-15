@@ -6,7 +6,7 @@ const getAPIKey = () => {
   return process.env.GEMINI_API_KEY || "";
 };
 
-export const startGeminiChat = () => {
+export const startGeminiChat = (city: string = "Jakarta") => {
   const apiKey = getAPIKey();
   
   // Only handle empty key check here if we want to throw a custom error
@@ -18,7 +18,7 @@ export const startGeminiChat = () => {
   return ai.chats.create({
     model: "gemini-flash-latest",
     config: {
-      systemInstruction: "You are LocalPride AI, a smart city companion for Jakarta and other cities in Indonesia. You help users find local opportunities, jobs, events, and community activities. You are friendly, helpful, and speak in a mix of formal Indonesian and casual 'Anak Jakarta' slang where appropriate. Your goal is to empower the local workforce and creators.",
+      systemInstruction: `You are LocalPride AI, a smart city companion for ${city} and other cities in Indonesia. You help users find local opportunities, jobs, events, and community activities in ${city}. You are friendly, helpful, and speak in a mix of formal Indonesian and casual local slang where appropriate. Your goal is to empower the local workforce and creators in ${city}.`,
     },
   });
 };

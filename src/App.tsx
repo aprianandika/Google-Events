@@ -9,6 +9,7 @@ import { Navigation } from './components/Navigation';
 import { CityPulse } from './components/CityPulse';
 import { OpportunityCard, OpportunityType } from './components/OpportunityCard';
 import { AICompanion } from './components/AICompanion';
+import { Logo } from './components/Logo';
 import { useAuth } from './contexts/AuthContext';
 import { AuthView } from './components/AuthView';
 import { Activity, Bell, Search, Layers, Map as MapIcon, TrendingUp, Zap, Users, Award, Sparkles, ChevronRight, ChevronLeft, LogOut } from 'lucide-react';
@@ -122,35 +123,44 @@ export default function App() {
         <motion.div 
           initial={{ scale: 0.8, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
           className="relative"
         >
-          <div className="w-20 h-20 bg-cyber-lime rounded-full blur-3xl opacity-20 animate-pulse" />
+          <Logo size="lg" withText={false} />
           <motion.div 
             animate={{ rotate: 360 }}
-            transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-            className="absolute inset-0 border-2 border-dashed border-cyber-lime/30 rounded-full"
+            transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
+            className="absolute -inset-8 border border-dashed border-cyber-lime/20 rounded-full"
           />
-          <div className="absolute inset-0 flex items-center justify-center">
-            <Zap className="text-cyber-lime" size={40} fill="currentColor" />
-          </div>
         </motion.div>
-        <motion.h1 
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="mt-8 text-2xl font-display font-black tracking-widest text-white uppercase"
-        >
-          LokalPride
-        </motion.h1>
-        <motion.p 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.5 }}
-          transition={{ delay: 0.5 }}
-          className="mt-2 text-xs font-mono uppercase tracking-tighter"
-        >
-          Menghubungkan Jiwa Kota
-        </motion.p>
+        
+        <div className="mt-12 text-center">
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.4 }}
+          >
+            <Logo size="md" className="justify-center" />
+          </motion.div>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 0.4 }}
+            transition={{ delay: 0.6 }}
+            className="mt-4 text-[10px] font-mono uppercase tracking-[0.3em] font-medium"
+          >
+            Nadi Digital Nusantara
+          </motion.p>
+        </div>
+
+        {/* Loading Bar */}
+        <div className="absolute bottom-20 w-48 h-[2px] bg-white/5 overflow-hidden rounded-full">
+           <motion.div 
+             initial={{ x: '-100%' }}
+             animate={{ x: '100%' }}
+             transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
+             className="w-full h-full bg-cyber-lime shadow-[0_0_10px_#DFFF00]"
+           />
+        </div>
       </div>
     );
   }
@@ -166,13 +176,8 @@ export default function App() {
       </div>
 
       {/* Header */}
-      <header className="fixed top-0 left-0 w-full p-6 flex justify-between items-center z-40 bg-gradient-to-b from-obsidian via-obsidian/80 to-transparent">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 glass-dark rounded-lg flex items-center justify-center border-cyber-lime/20">
-            <Zap size={16} className="text-cyber-lime" fill="currentColor" />
-          </div>
-          <span className="font-display font-black text-xl tracking-tighter">LokalPride</span>
-        </div>
+      <header className="fixed top-0 left-0 w-full p-6 flex justify-between items-center z-40 bg-gradient-to-b from-obsidian via-obsidian/80 to-transparent backdrop-blur-md">
+        <Logo size="sm" />
         <div className="flex gap-4">
           {!user ? (
             <button 
@@ -289,7 +294,7 @@ export default function App() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-              <AICompanion />
+              <AICompanion cityName={selectedCity} />
             </motion.div>
           )}
 
@@ -300,7 +305,7 @@ export default function App() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-              <ExploreView onOpenMap={() => setShowMacro(true)} />
+              <ExploreView cityName={selectedCity} onOpenMap={() => setShowMacro(true)} />
             </motion.div>
           )}
 
@@ -311,7 +316,7 @@ export default function App() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-              <SocialView />
+              <SocialView cityName={selectedCity} />
             </motion.div>
           )}
 
