@@ -17,7 +17,11 @@ export const AICompanion = () => {
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    chatRef.current = startGeminiChat();
+    try {
+      chatRef.current = startGeminiChat();
+    } catch (error) {
+      console.error("Failed to initialize Gemini chat:", error);
+    }
   }, []);
 
   useEffect(() => {
@@ -35,12 +39,19 @@ export const AICompanion = () => {
     setIsLoading(true);
 
     try {
+      if (!chatRef.current) {
+        chatRef.current = startGeminiChat();
+      }
       const response = await chatRef.current.sendMessage({ message: text });
       const botMessage: Message = { role: 'bot', text: response.text || 'Maaf, saya sedang mengalami gangguan.' };
       setMessages(prev => [...prev, botMessage]);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Chat Error:", error);
-      setMessages(prev => [...prev, { role: 'bot', text: 'Maaf, sepertinya ada masalah koneksi. Coba lagi nanti ya!' }]);
+      let errorMsg = 'Maaf, sepertinya ada masalah koneksi. Coba lagi nanti ya!';
+      if (error.message === 'API_KEY_MISSING') {
+        errorMsg = 'Maaf, API Key LokalPride AI belum terkonfigurasi. Hubungi admin atau cek pengaturan Anda.';
+      }
+      setMessages(prev => [...prev, { role: 'bot', text: errorMsg }]);
     } finally {
       setIsLoading(false);
     }
