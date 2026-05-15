@@ -1,0 +1,76 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 0. Global Safety Net - Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // --- Helper Functions ---
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isEmailVerified() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+    
+    function isOwnerVerified(userId) {
+       return isOwner(userId) && isEmailVerified();
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // --- Entity Validations ---
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['uid', 'email', 'createdAt']) &&
+             data.uid is string && data.uid.size() <= 128 &&
+             data.email is string && data.email.size() <= 256 &&
+             data.createdAt is timestamp &&
+             // Optional fields
+             (!('displayName' in data) || data.displayName == null || (data.displayName is string && data.displayName.size() <= 100)) &&
+             (!('photoURL' in data) || data.photoURL == null || (data.photoURL is string && data.photoURL.size() <= 1000)) &&
+             (!('city' in data) || data.city == null || (data.city is string && data.city.size() <= 50)) &&
+             (!('bio' in data) || data.bio == null || (data.bio is string && data.bio.size() <= 500)) &&
+             (!('updatedAt' in data) || data.updatedAt == null || data.updatedAt is timestamp) &&
+             (data.keys().size() <= 10);
+    }
+
+    // --- Collections ---
+
+    match /users/{userId} {
+      allow get: if isSignedIn(); // Allow reading any profile if signed in
+      allow create: if isOwnerVerified(userId) && 
+                      isValidUser(incoming()) && 
+                      incoming().uid == userId &&
+                      incoming().createdAt == request.time;
+      
+      allow update: if isOwnerVerified(userId) && 
+                      isValidUser(incoming()) &&
+                      incoming().uid == existing().uid &&
+                      incoming().createdAt == existing().createdAt &&
+                      incoming().updatedAt == request.time &&
+                      incoming().email == existing().email &&
+                      // Basic action: Profile Update
+                      incoming().diff(existing()).affectedKeys().hasAny(['displayName', 'photoURL', 'city', 'bio', 'updatedAt']);
+      
+      allow delete: if false;
+    }
+  }
+}

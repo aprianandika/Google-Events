@@ -1,0 +1,26 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Public profile information for a user",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "displayName": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "photoURL": { "type": "string" },
+        "city": { "type": "string" },
+        "bio": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "email", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profiles indexed by their authentication UID"
+    }
+  }
+}

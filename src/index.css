@@ -6,7 +6,7 @@
   --font-display: "Outfit", sans-serif;
   --font-mono: "Space Grotesk", monospace;
 
-  --color-cyber-lime: #CCFF00;
+  --color-cyber-lime: #FF3131;
   --color-obsidian: #0A0A0A;
   --color-stone-gold: #F5C518;
 }
@@ -25,10 +25,39 @@
     @apply bg-black/40 backdrop-blur-2xl border border-white/5;
   }
   .text-glow {
-    text-shadow: 0 0 20px rgba(204, 255, 0, 0.4);
+    text-shadow: 0 0 20px rgba(255, 49, 49, 0.4);
   }
   .city-pulse-gradient {
-    background: radial-gradient(circle at 50% 50%, rgba(204, 255, 0, 0.15) 0%, transparent 70%);
+    background: radial-gradient(circle at 50% 50%, rgba(255, 49, 49, 0.15) 0%, transparent 70%);
+  }
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .markdown-content p {
+    margin-bottom: 0.5rem;
+  }
+
+  .markdown-content p:last-child {
+    margin-bottom: 0;
+  }
+
+  .markdown-content ul, .markdown-content ol {
+    margin-bottom: 0.5rem;
+    padding-left: 1.25rem;
+  }
+
+  .markdown-content li {
+    margin-bottom: 0.25rem;
+  }
+
+  .markdown-content strong {
+    color: white;
+    font-weight: 600;
   }
 }
 

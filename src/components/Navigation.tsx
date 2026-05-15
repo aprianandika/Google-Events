@@ -14,14 +14,14 @@ const NavItem = ({ icon: Icon, label, active, onClick }: NavItemProps) => (
     onClick={onClick}
     className={`flex flex-col items-center justify-center gap-1 transition-all duration-300 ${active ? 'text-cyber-lime scale-110' : 'text-white/40'}`}
   >
-    <div className={`p-2 rounded-full transition-all duration-500 ${active ? 'bg-cyber-lime/10 shadow-[0_0_20px_rgba(204,255,0,0.1)]' : ''}`}>
+    <div className={`p-2 rounded-full transition-all duration-500 ${active ? 'bg-cyber-lime/10 shadow-[0_0_20px_rgba(255, 49, 49, 0.1)]' : ''}`}>
       <Icon size={24} strokeWidth={active ? 2.5 : 2} />
     </div>
     <span className="text-[10px] uppercase font-mono tracking-widest font-medium">{label}</span>
     {active && (
       <motion.div 
         layoutId="nav-glow"
-        className="absolute -bottom-2 w-1 h-1 bg-cyber-lime rounded-full shadow-[0_0_10px_#CCFF00]"
+        className="absolute -bottom-2 w-1 h-1 bg-cyber-lime rounded-full shadow-[0_0_10px_#FF3131]"
       />
     )}
   </button>

@@ -57,7 +57,7 @@ export const OpportunityCard = ({ type, title, subtitle, tags, energyLevel }: Op
         <motion.div 
           initial={{ width: 0 }}
           animate={{ width: `${energyLevel}%` }}
-          className="h-full bg-cyber-lime shadow-[0_0_10px_#CCFF00]"
+          className="h-full bg-cyber-lime shadow-[0_0_10px_#FF3131]"
         />
       </div>
       <div className="mt-2 flex justify-between items-center text-[9px] font-mono text-white/30 uppercase tracking-tighter">

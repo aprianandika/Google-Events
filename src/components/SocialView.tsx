@@ -79,7 +79,7 @@ export const SocialView = () => {
           <h3 className="text-3xl font-display font-black">Diskusi Kota</h3>
         </div>
         <div className="flex gap-2">
-           <button className="w-12 h-12 glass rounded-2xl flex items-center justify-center text-cyber-lime shadow-[0_0_20px_rgba(204,255,0,0.1)]">
+           <button className="w-12 h-12 glass rounded-2xl flex items-center justify-center text-cyber-lime shadow-[0_0_20px_rgba(255, 49, 49, 0.1)]">
               <Plus size={24} />
            </button>
         </div>
@@ -97,7 +97,9 @@ export const SocialView = () => {
       {/* Discussion List */}
       <div className="space-y-4">
         {DISCUSSIONS.map(d => (
-          <DiscussionCard key={d.id} discussion={d} />
+          <div key={d.id}>
+            <DiscussionCard discussion={d} />
+          </div>
         ))}
       </div>
 

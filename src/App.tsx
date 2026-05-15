@@ -9,10 +9,15 @@ import { Navigation } from './components/Navigation';
 import { CityPulse } from './components/CityPulse';
 import { OpportunityCard, OpportunityType } from './components/OpportunityCard';
 import { AICompanion } from './components/AICompanion';
-import { Activity, Bell, Search, Layers, Map as MapIcon, TrendingUp, Zap, Users, Award } from 'lucide-react';
+import { useAuth } from './contexts/AuthContext';
+import { AuthView } from './components/AuthView';
+import { Activity, Bell, Search, Layers, Map as MapIcon, TrendingUp, Zap, Users, Award, Sparkles, ChevronRight, ChevronLeft, LogOut } from 'lucide-react';
+import { auth } from './lib/firebase';
 import { ExploreView } from './components/ExploreView';
 import { SocialView } from './components/SocialView';
 import { ProfileView } from './components/ProfileView';
+import { MacroMapView } from './components/MacroMapView';
+import { SkillShowcase } from './components/SkillShowcase';
 
 interface LocalPulse {
   id: string;
@@ -23,52 +28,95 @@ interface LocalPulse {
   energy: number;
 }
 
-const MOCK_OPPORTUNITIES: LocalPulse[] = [
-  {
-    id: '1',
-    type: 'job',
-    title: 'Lead Creative Strategist',
-    subtitle: 'Studio ultra-modern di SCBD mencari visual disruptor.',
-    tags: ['Remote-Hybrid', 'High-Tier', 'Desain'],
-    energy: 92
-  },
-  {
-    id: '2',
-    type: 'event',
-    title: 'Pertemuan NusaPulse Jakarta',
-    subtitle: 'Menghubungkan perajin lokal dan pengembang teknologi di Nomad House.',
-    tags: ['Networking', 'Gratis', 'Malam Ini'],
-    energy: 78
-  },
-  {
-    id: '3',
-    type: 'community',
-    title: 'Kolektif AI Jakarta',
-    subtitle: 'Komunitas akar rumput yang membangun LLM lokal untuk Indonesia.',
-    tags: ['Membangun', 'Kolaboratif', 'Aktif'],
-    energy: 85
-  },
-  {
-    id: '4',
-    type: 'business',
-    title: 'Kopi Kenangan (Terbatas)',
-    subtitle: 'Diskon eksklusif NusaPulse untuk penggerak energi kota.',
-    tags: ['Promosi', 'Gaya Hidup', 'Terdekat'],
-    energy: 64
+const getOpportunitiesForCity = (city: string): LocalPulse[] => {
+  const base = [
+    {
+      id: '1',
+      type: 'job' as OpportunityType,
+      title: 'Senior Developer',
+      subtitle: `Membangun ekosistem teknologi di pusat ${city}.`,
+      tags: ['Fullstack', city, 'High-Tier'],
+      energy: 95
+    },
+    {
+      id: '2',
+      type: 'event' as OpportunityType,
+      title: `Festival LokalPride ${city}`,
+      subtitle: `Merayakan kreativitas komunitas ${city} di pusat kota.`,
+      tags: ['Budaya', 'Networking', 'Besok'],
+      energy: 88
+    },
+    {
+      id: '3',
+      type: 'community' as OpportunityType,
+      title: `Kolektif Kreatif ${city}`,
+      subtitle: `Gabung dengan ribuan penggerak ${city} di platform ini.`,
+      tags: ['Kolaborasi', 'Social', 'Aktif'],
+      energy: 72
+    }
+  ];
+
+  if (city === 'Karawang') {
+    return [
+      ...base,
+      {
+        id: 'k1',
+        type: 'job' as OpportunityType,
+        title: 'Industrial Automation Specialist',
+        subtitle: 'Optimalisasi lini produksi di Kawasan Industri KIIC.',
+        tags: ['Manufaktur', 'IoT', 'On-site'],
+        energy: 96
+      }
+    ];
   }
-];
+
+  if (city === 'Magelang') {
+    return [
+      ...base,
+      {
+        id: 'm1',
+        type: 'event' as OpportunityType,
+        title: 'Heritage Walk Borobudur',
+        subtitle: 'Eksplorasi narasi sejarah dan modal budaya Magelang.',
+        tags: ['Pariwisata', 'Sejarah', 'Weekend'],
+        energy: 84
+      }
+    ];
+  }
+
+  if (city === 'Jakarta') {
+    return [
+      ...base,
+      {
+        id: '4',
+        type: 'business' as OpportunityType,
+        title: 'Kopi Kenangan SCBD',
+        subtitle: 'Diskon khusus warga LokalPride di area SCBD.',
+        tags: ['Lifestyle', 'Promo'],
+        energy: 60
+      }
+    ];
+  }
+
+  return base;
+};
 
 export default function App() {
+  const { user, loading: authLoading } = useAuth();
   const [activeTab, setActiveTab] = useState('home');
   const [showSplash, setShowSplash] = useState(true);
+  const [showMacro, setShowMacro] = useState(false);
+  const [showSkills, setShowSkills] = useState(false);
   const [selectedCity, setSelectedCity] = useState('Jakarta');
+
+  const opportunities = getOpportunitiesForCity(selectedCity);
 
   useEffect(() => {
     const timer = setTimeout(() => setShowSplash(false), 2500);
     return () => clearTimeout(timer);
   }, []);
 
-  if (showSplash) {
+  if (showSplash || authLoading) {
     return (
       <div className="fixed inset-0 bg-obsidian flex flex-col items-center justify-center z-[100]">
         <motion.div 
@@ -93,7 +141,7 @@ export default function App() {
           transition={{ delay: 0.3 }}
           className="mt-8 text-2xl font-display font-black tracking-widest text-white uppercase"
         >
-          NusaPulse
+          LokalPride
         </motion.h1>
         <motion.p 
           initial={{ opacity: 0 }}
@@ -106,6 +154,8 @@ export default function App() {
       </div>
     );
   }
+
+  const isTabProtected = ['companion', 'social', 'profile'].includes(activeTab);
 
   return (
     <div className="min-h-screen bg-obsidian relative pb-40">
@@ -121,14 +171,26 @@ export default function App() {
           <div className="w-8 h-8 glass-dark rounded-lg flex items-center justify-center border-cyber-lime/20">
             <Zap size={16} className="text-cyber-lime" fill="currentColor" />
           </div>
-          <span className="font-display font-black text-xl tracking-tighter">NusaPulse</span>
+          <span className="font-display font-black text-xl tracking-tighter">LokalPride</span>
         </div>
         <div className="flex gap-4">
-          <button className="w-10 h-10 glass rounded-full flex items-center justify-center text-white/60 hover:text-white transition-colors">
-            <Search size={18} />
-          </button>
-          <button className="w-10 h-10 glass rounded-full flex items-center justify-center text-white/60 hover:text-white transition-colors">
-            <Bell size={18} />
+          {!user ? (
+            <button 
+              onClick={() => setActiveTab('profile')}
+              className="px-4 h-10 glass-dark rounded-full flex items-center justify-center text-cyber-lime text-[10px] font-mono uppercase tracking-widest border border-cyber-lime/20 hover:bg-cyber-lime/10 transition-colors"
+            >
+              Masuk
+            </button>
+          ) : (
+            <div className="w-10 h-10 glass rounded-full flex items-center justify-center overflow-hidden border border-white/10 cursor-pointer" onClick={() => setActiveTab('profile')}>
+              <img src={user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`} alt="Avatar" className="w-full h-full object-cover" />
+            </div>
+          )}
+          <button 
+            onClick={() => setShowMacro(true)}
+            className="w-10 h-10 glass rounded-full flex items-center justify-center text-cyber-lime hover:bg-cyber-lime/10 transition-colors"
+          >
+            <MapIcon size={18} />
           </button>
         </div>
       </header>
@@ -136,7 +198,19 @@ export default function App() {
       {/* Main Content Area */}
       <main className="relative pt-20">
         <AnimatePresence mode="wait">
-          {activeTab === 'home' && (
+          {!user && isTabProtected ? (
+            <motion.div
+              key="auth-overlay"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="px-6"
+            >
+              <AuthView />
+            </motion.div>
+          ) : (
+            <>
+              {activeTab === 'home' && (
             <motion.div 
               key="home"
               initial={{ opacity: 0, y: 10 }}
@@ -151,22 +225,44 @@ export default function App() {
                   <h2 className="text-sm font-mono text-white/40 uppercase tracking-widest mb-1">Umpan Lokal • Hari Ini</h2>
                   <h3 className="text-2xl font-display font-bold">Energi Tren</h3>
                 </div>
-                <button className="text-xs font-mono text-cyber-lime uppercase tracking-wider flex items-center gap-1">
-                  Lihat Peta <MapIcon size={12} />
+                <button 
+                  onClick={() => setShowMacro(true)}
+                  className="text-xs font-mono text-cyber-lime uppercase tracking-wider flex items-center gap-1 group"
+                >
+                  <span className="group-hover:mr-2 transition-all">Zoom Out (Map)</span> <MapIcon size={12} />
                 </button>
               </div>
 
+              {/* Skill Showcase Entry */}
+              <motion.div 
+                onClick={() => setShowSkills(true)}
+                whileTap={{ scale: 0.98 }}
+                className="mb-8 p-6 glass rounded-[40px] border-white/5 flex items-center gap-4 cursor-pointer hover:border-cyber-lime/20 transition-all bg-gradient-to-r from-cyber-lime/5 to-transparent shadow-[0_0_50px_rgba(255, 49, 49, 0.03)]"
+              >
+                <div className="w-14 h-14 bg-cyber-lime/10 rounded-2xl flex items-center justify-center text-cyber-lime">
+                  <Sparkles size={28} />
+                </div>
+                <div className="flex-1">
+                  <h4 className="text-lg font-display font-black leading-tight">Unjuk Keahlian Lokal</h4>
+                  <p className="text-[10px] text-white/40 font-mono uppercase tracking-widest mt-1">42 Talenta baru bergabung minggu ini</p>
+                </div>
+                <div className="w-10 h-10 glass rounded-full flex items-center justify-center text-cyber-lime">
+                  <ChevronRight size={20} />
+                </div>
+              </motion.div>
+
               {/* Feed Grid */}
               <div className="space-y-4">
-                {MOCK_OPPORTUNITIES.map(opt => (
-                  <OpportunityCard 
-                    key={opt.id} 
-                    type={opt.type}
-                    title={opt.title}
-                    subtitle={opt.subtitle}
-                    tags={opt.tags}
-                    energyLevel={opt.energy}
-                  />
+                {opportunities.map(opt => (
+                  <div key={opt.id}>
+                    <OpportunityCard 
+                      type={opt.type}
+                      title={opt.title}
+                      subtitle={opt.subtitle}
+                      tags={opt.tags}
+                      energyLevel={opt.energy}
+                    />
+                  </div>
                 ))}
               </div>
 
@@ -186,7 +282,7 @@ export default function App() {
             </motion.div>
           )}
 
-          {activeTab === 'companion' && (
+          {activeTab === 'companion' && user && (
             <motion.div 
               key="companion"
               initial={{ opacity: 0 }}
@@ -204,11 +300,11 @@ export default function App() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
             >
-              <ExploreView />
+              <ExploreView onOpenMap={() => setShowMacro(true)} />
             </motion.div>
           )}
 
-          {activeTab === 'social' && (
+          {activeTab === 'social' && user && (
             <motion.div 
               key="social"
               initial={{ opacity: 0 }}
@@ -219,7 +315,7 @@ export default function App() {
             </motion.div>
           )}
 
-          {activeTab === 'profile' && (
+          {activeTab === 'profile' && user && (
             <motion.div 
               key="profile"
               initial={{ opacity: 0 }}
@@ -229,13 +325,49 @@ export default function App() {
               <ProfileView />
             </motion.div>
           )}
-
-          {/* Empty catch-all or default view logic removed since all tabs are implemented */}
-        </AnimatePresence>
-      </main>
+        </>
+      )}
+    </AnimatePresence>
+  </main>
 
       {/* Navigation */}
       <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
+
+      {/* Overlays */}
+      <AnimatePresence>
+        {showMacro && (
+          <motion.div
+            initial={{ opacity: 0, scale: 1.1 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 1.1 }}
+            className="fixed inset-0 z-[200]"
+          >
+            <MacroMapView 
+              onBack={() => setShowMacro(false)} 
+              onSelectCity={(city) => {
+                setSelectedCity(city);
+                setActiveTab('home');
+              }}
+            />
+          </motion.div>
+        )}
+        {showSkills && (
+          <motion.div
+            initial={{ y: '100%' }}
+            animate={{ y: 0 }}
+            exit={{ y: '100%' }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            className="fixed inset-0 bg-obsidian z-[200] overflow-y-auto pt-12"
+          >
+            <div className="px-6 flex justify-start mb-4">
+              <button onClick={() => setShowSkills(false)} className="w-12 h-12 glass rounded-2xl flex items-center justify-center text-white/60">
+                <ChevronLeft size={24} />
+              </button>
+            </div>
+            <SkillShowcase />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

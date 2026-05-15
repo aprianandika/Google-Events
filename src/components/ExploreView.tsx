@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { Search, Filter, Map as MapIcon, Compass, Zap, Users, Calendar, Briefcase, Coffee } from 'lucide-react';
+import { Search, Filter, Map as MapIcon, Compass, Zap, Users, Calendar, Briefcase, Coffee, TrendingUp } from 'lucide-react';
 import { OpportunityCard } from './OpportunityCard';
 
 const CATEGORIES = [
@@ -46,8 +46,19 @@ const EXPLORE_ITEMS = [
   }
 ];
 
-export const ExploreView = () => {
+export const ExploreView = ({ onOpenMap }: { onOpenMap?: () => void }) => {
   const [activeCategory, setActiveCategory] = useState('all');
+  const [votedItems, setVotedItems] = useState<string[]>(['v1']);
+
+  const toggleVote = (id: string) => {
+    setVotedItems(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
+  };
+
+  const SUGGESTIONS = [
+    { id: 'v1', title: 'Car Free Tech Night', description: 'Uji coba teknologi mikro-mobilitas di sepanjang Sudirman.', votes: 421 },
+    { id: 'v2', title: 'Open Air AI Talk', description: 'Diskusi senja tentang etika AI di Taman Ismail Marzuki.', votes: 289 },
+    { id: 'v3', title: 'Mural Digital Mapping', description: 'Kompetisi seni proyeksi pada gedung budaya di Menteng.', votes: 154 },
+  ];
 
   return (
     <div className="px-6 pt-24 pb-32">
@@ -74,7 +85,7 @@ export const ExploreView = () => {
               <button
                 key={cat.id}
                 onClick={() => setActiveCategory(cat.id)}
-                className={`flex items-center gap-2 px-5 py-2.5 rounded-full whitespace-nowrap transition-all duration-300 font-mono text-[10px] uppercase tracking-wider border ${isActive ? 'bg-cyber-lime text-obsidian border-cyber-lime shadow-[0_0_15px_rgba(204,255,0,0.2)]' : 'bg-white/5 text-white/40 border-white/5 hover:border-white/20'}`}
+                className={`flex items-center gap-2 px-5 py-2.5 rounded-full whitespace-nowrap transition-all duration-300 font-mono text-[10px] uppercase tracking-wider border ${isActive ? 'bg-cyber-lime text-obsidian border-cyber-lime shadow-[0_0_15px_rgba(255, 49, 49, 0.2)]' : 'bg-white/5 text-white/40 border-white/5 hover:border-white/20'}`}
               >
                 <Icon size={14} />
                 {cat.label}
@@ -119,11 +130,62 @@ export const ExploreView = () => {
         </div>
       </div>
 
+      {/* AI Activity Voting Section */}
+      <div className="mb-12">
+        <header className="flex justify-between items-center mb-6 px-2">
+          <div>
+            <div className="flex items-center gap-2 text-cyber-lime mb-1">
+              <Zap size={14} className="animate-pulse" />
+              <span className="text-[10px] font-mono font-bold uppercase tracking-widest">AI Suggested Activities</span>
+            </div>
+            <h3 className="text-xl font-display font-black">Voting Rencana Kota</h3>
+          </div>
+          <button className="text-[10px] font-mono text-white/30 uppercase border border-white/10 px-3 py-1 rounded-full">
+            History
+          </button>
+        </header>
+
+        <div className="space-y-4">
+          {SUGGESTIONS.map((v, i) => {
+            const isVoted = votedItems.includes(v.id);
+            return (
+              <motion.div 
+                key={v.id}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: i * 0.1 }}
+                className={`p-6 glass rounded-3xl border border-white/5 relative overflow-hidden transition-all duration-300 ${isVoted ? 'border-cyber-lime/40' : ''}`}
+              >
+                {isVoted && <div className="absolute top-0 right-0 w-24 h-24 bg-cyber-lime/5 blur-3xl pointer-events-none" />}
+                <div className="flex justify-between items-start">
+                  <div className="flex-1 pr-6">
+                    <h4 className={`text-lg font-display font-bold mb-1 transition-colors ${isVoted ? 'text-cyber-lime' : 'text-white'}`}>{v.title}</h4>
+                    <p className="text-sm text-white/40 mb-4 line-clamp-2">{v.description}</p>
+                  </div>
+                  <div className="flex flex-col items-center gap-2">
+                    <button 
+                      onClick={() => toggleVote(v.id)}
+                      className={`w-12 h-12 rounded-2xl flex items-center justify-center transition-all ${isVoted ? 'bg-cyber-lime text-obsidian shadow-[0_0_20px_rgba(255, 49, 49, 0.3)]' : 'bg-white/5 text-white/40 hover:bg-white/10'}`}
+                    >
+                      <TrendingUp size={20} />
+                    </button>
+                    <span className="text-xs font-mono font-bold text-white/60">{v.votes + (isVoted && v.id !== 'v1' ? 1 : 0)}</span>
+                  </div>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+
       {/* Results */}
       <div>
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-xl font-display font-bold">Temuan Jelajah</h3>
-          <button className="flex items-center gap-2 glass px-3 py-1.5 rounded-full text-[9px] font-mono text-white/60">
+          <button 
+            onClick={onOpenMap}
+            className="flex items-center gap-2 glass px-3 py-1.5 rounded-full text-[9px] font-mono text-white/60 hover:text-white transition-colors"
+          >
             <MapIcon size={12} /> Buka Peta
           </button>
         </div>
@@ -131,14 +193,15 @@ export const ExploreView = () => {
           {EXPLORE_ITEMS
             .filter(item => activeCategory === 'all' || item.type === activeCategory)
             .map(item => (
-              <OpportunityCard 
-                key={item.id}
-                type={item.type}
-                title={item.title}
-                subtitle={item.subtitle}
-                tags={item.tags}
-                energyLevel={item.energy}
-              />
+              <div key={item.id}>
+                <OpportunityCard 
+                  type={item.type}
+                  title={item.title}
+                  subtitle={item.subtitle}
+                  tags={item.tags}
+                  energyLevel={item.energy}
+                />
+              </div>
             ))}
         </div>
       </div>

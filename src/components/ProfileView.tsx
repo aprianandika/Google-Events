@@ -1,6 +1,9 @@
 import React from 'react';
 import { motion } from 'motion/react';
-import { User, Settings, Award, MapPin, Zap, ExternalLink, ShieldCheck, ChevronRight } from 'lucide-react';
+import { User, Settings, Award, MapPin, Zap, ExternalLink, ShieldCheck, ChevronRight, LogOut } from 'lucide-react';
+import { useAuth } from '../contexts/AuthContext';
+import { auth } from '../lib/firebase';
+import { signOut } from 'firebase/auth';
 
 const ACHIEVEMENT_BADGES = [
   { id: 1, label: 'Early Builder', color: 'cyber-lime' },
@@ -9,11 +12,23 @@ const ACHIEVEMENT_BADGES = [
 ];
 
 export const ProfileView = () => {
+  const { userProfile } = useAuth();
+
+  const handleLogout = async () => {
+    await signOut(auth);
+  };
+
   return (
     <div className="px-6 pt-24 pb-32">
       {/* Profile Card */}
       <div className="relative mb-8">
-        <div className="absolute top-0 right-0 p-4">
+        <div className="absolute top-0 right-0 p-4 flex gap-2">
+           <button 
+             onClick={handleLogout}
+             className="w-10 h-10 glass-dark rounded-full flex items-center justify-center text-cyber-lime hover:bg-cyber-lime/10 transition-colors"
+           >
+              <LogOut size={18} />
+           </button>
            <button className="w-10 h-10 glass-dark rounded-full flex items-center justify-center text-white/40">
               <Settings size={18} />
            </button>
@@ -23,17 +38,17 @@ export const ProfileView = () => {
           <div className="absolute inset-0 bg-gradient-to-b from-cyber-lime/5 to-transparent pointer-events-none" />
           
           <div className="relative mb-6">
-            <div className="w-24 h-24 rounded-full border-2 border-cyber-lime p-1 shadow-[0_0_30px_rgba(204,255,0,0.2)]">
-               <img src="https://api.dicebear.com/7.x/avataaars/svg?seed=Aprian" className="w-full h-full rounded-full bg-white/10" alt="Profile" />
+            <div className="w-24 h-24 rounded-full border-2 border-cyber-lime p-1 shadow-[0_0_30px_rgba(255, 49, 49, 0.2)]">
+               <img src={userProfile?.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${userProfile?.displayName || 'lucky'}`} className="w-full h-full rounded-full bg-white/10" alt="Profile" />
             </div>
             <div className="absolute -bottom-1 -right-1 bg-cyber-lime text-obsidian p-1.5 rounded-full shadow-lg">
                <ShieldCheck size={14} />
             </div>
           </div>
 
-          <h2 className="text-3xl font-display font-black text-white mb-1">Aprian Surya</h2>
+          <h2 className="text-3xl font-display font-black text-white mb-1">{userProfile?.displayName || 'Jiwa Lokal'}</h2>
           <div className="flex items-center gap-2 text-white/40 font-mono text-[10px] uppercase tracking-widest mb-6">
-            <MapPin size={12} className="text-cyber-lime" /> Jakarta, Indonesia
+            <MapPin size={12} className="text-cyber-lime" /> {userProfile?.city || 'Jakarta'}, Indonesia
           </div>
 
           {/* Stats Grid */}
@@ -76,7 +91,7 @@ export const ProfileView = () => {
       {/* Menu Options */}
       <div className="space-y-3">
         {[
-          { icon: Zap, label: 'Dompet Digi-Aset', value: '1.240 NP' },
+          { icon: Zap, label: 'Dompet Digi-Aset', value: '1.240 LP' },
           { icon: User, label: 'Identitas Digitalitas', value: 'Terverifikasi' },
           { icon: MapPin, label: 'Aktivitas Lokasi', value: '24 Area' },
         ].map((item, i) => (
@@ -100,6 +115,14 @@ export const ProfileView = () => {
 
       <button className="w-full mt-12 py-5 bg-white text-obsidian rounded-[32px] font-display font-black uppercase tracking-[0.2em] text-xs hover:bg-cyber-lime transition-colors shadow-2xl">
          Eksport Identitas Ke Jaringan
+      </button>
+
+      <button 
+        onClick={handleLogout}
+        className="w-full mt-4 py-5 glass rounded-[32px] font-display font-black uppercase tracking-[0.2em] text-xs text-cyber-lime border border-cyber-lime/30 hover:bg-cyber-lime/10 transition-colors shadow-2xl flex items-center justify-center gap-2"
+      >
+        <LogOut size={18} />
+        Keluar Protokol
       </button>
     </div>
   );
