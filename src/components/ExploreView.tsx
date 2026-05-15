@@ -213,10 +213,21 @@ export const ExploreView = ({ cityName = 'Jakarta', onOpenMap }: { cityName?: st
     <div className="px-6 pt-24 pb-32">
       {/* Search Header */}
       <div className="mb-8">
-        <div className="mb-4">
-          <span className="text-[10px] font-mono text-cyber-lime uppercase tracking-[0.2em]">Menjelajahi Kota</span>
-          <h2 className="text-3xl font-display font-black text-white">{cityName}</h2>
-        </div>
+        <header 
+          className="mb-4 group cursor-pointer"
+          onClick={onOpenMap}
+        >
+          <div className="flex items-center gap-2 mb-1">
+            <span className="text-[10px] font-mono text-cyber-lime uppercase tracking-[0.2em]">Menjelajahi Kota</span>
+            <MapIcon size={10} className="text-cyber-lime opacity-0 group-hover:opacity-100 transition-opacity" />
+          </div>
+          <div className="flex items-center gap-3">
+            <h2 className="text-3xl font-display font-black text-white group-hover:text-cyber-lime transition-colors leading-none">{cityName}</h2>
+            <div className="w-8 h-8 rounded-full glass flex items-center justify-center text-white/20 group-hover:text-cyber-lime group-hover:border-cyber-lime/30 transition-all border border-transparent">
+              <TrendingUp size={14} className="rotate-90 group-hover:rotate-0 transition-transform" />
+            </div>
+          </div>
+        </header>
         <div className="relative mb-6">
           <input 
             type="text" 
