@@ -219,7 +219,7 @@ export default function App() {
              initial={{ x: '-100%' }}
              animate={{ x: '100%' }}
              transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
-             className="w-full h-full bg-cyber-lime shadow-[0_0_10px_#DFFF00]"
+             className="w-full h-full bg-cyber-lime shadow-[0_0_10px_#FF3131]"
            />
         </div>
       </div>
@@ -254,7 +254,7 @@ export default function App() {
                 <p className="text-xs font-bold text-white leading-none">{userProfile?.displayName || user.displayName || 'User'}</p>
               </div>
               <div 
-                className="w-10 h-10 glass rounded-full flex items-center justify-center overflow-hidden border border-cyber-lime/30 cursor-pointer shadow-[0_0_15px_rgba(223,255,0,0.2)]" 
+                className="w-10 h-10 glass rounded-full flex items-center justify-center overflow-hidden border border-cyber-lime/30 cursor-pointer shadow-[0_0_15px_rgba(255,49,49,0.2)]" 
                 onClick={() => setActiveTab('profile')}
               >
                 <img 

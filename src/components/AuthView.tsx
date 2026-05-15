@@ -132,7 +132,18 @@ export const AuthView = () => {
             </div>
 
             {error && (
-              <p className="text-[10px] text-cyber-lime/80 font-mono text-center">{error}</p>
+              <div className="space-y-3">
+                <p className="text-[10px] text-cyber-lime/80 font-mono text-center">{error}</p>
+                {error.includes('auth/unauthorized-domain') && (window.location.hostname.includes('netlify.app')) && (
+                  <div className="p-3 bg-white/5 border border-white/10 rounded-xl text-left">
+                    <p className="text-[10px] text-white/60 leading-relaxed font-mono uppercase tracking-widest mb-2">TIPS DEPLOYMENT (NETLIFY):</p>
+                    <p className="text-[10px] text-white/40 leading-relaxed italic">
+                      Domain <span className="text-white">localpride.netlify.app</span> belum terdaftar di Firebase Console. 
+                      Buka Firebase Console &gt; Auth &gt; Settings &gt; Authorized Domains dan tambahkan domain Netlify Anda.
+                    </p>
+                  </div>
+                )}
+              </div>
             )}
 
             <button 

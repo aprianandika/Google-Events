@@ -35,7 +35,7 @@ export const Logo = ({ className = '', size = 'md', withText = true }: LogoProps
               animate={{ pathLength: 1, opacity: 1 }}
               transition={{ duration: 1.5, ease: "easeInOut" }}
               d="M20 20 V80 H45 M55 30 H85 V70 H55 Z"
-              className="drop-shadow-[0_0_8px_rgba(223,255,0,0.5)]"
+              className="drop-shadow-[0_0_8px_rgba(255,49,49,0.5)]"
             />
             {/* Pulse Dot */}
             <motion.circle
