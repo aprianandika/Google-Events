@@ -49,7 +49,7 @@ export const AICompanion = ({ cityName = 'Jakarta' }: { cityName?: string }) => 
       console.error("Chat Error:", error);
       let errorMsg = 'Maaf, sepertinya ada masalah koneksi. Coba lagi nanti ya!';
       if (error.message === 'API_KEY_MISSING') {
-        errorMsg = 'Maaf, API Key LokalPride AI belum terkonfigurasi. Hubungi admin atau cek pengaturan Anda.';
+        errorMsg = 'Maaf, API Key LokalPride AI belum terkonfigurasi. Jika Anda menjalankan ini di server (seperti Netlify), pastikan variabel GEMINI_API_KEY sudah ditambahkan di pengaturan Environment Variables.';
       }
       setMessages(prev => [...prev, { role: 'bot', text: errorMsg }]);
     } finally {
