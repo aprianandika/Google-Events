@@ -29,7 +29,7 @@ const NavItem = ({ icon: Icon, label, active, onClick }: NavItemProps) => (
 
 export const Navigation = ({ activeTab, setActiveTab }: { activeTab: string, setActiveTab: (tab: string) => void }) => {
   return (
-    <nav className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-md h-20 glass rounded-full flex items-center justify-around px-6 z-50 overflow-hidden">
+    <nav className="fixed bottom-0 left-0 w-full md:bottom-6 md:left-1/2 md:-translate-x-1/2 md:w-[90%] md:max-w-md h-20 glass md:rounded-full flex items-center justify-around px-6 z-50 overflow-hidden">
       <NavItem icon={Home} label="Beranda" active={activeTab === 'home'} onClick={() => setActiveTab('home')} />
       <NavItem icon={Compass} label="Jelajah" active={activeTab === 'explore'} onClick={() => setActiveTab('explore')} />
       <div className="relative -top-3">

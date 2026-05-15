@@ -238,7 +238,9 @@ export default function App() {
 
       {/* Header */}
       <header className="fixed top-0 left-0 w-full p-6 flex justify-between items-center z-40 bg-gradient-to-b from-obsidian via-obsidian/80 to-transparent backdrop-blur-md">
-        <Logo size="sm" />
+        <div className="cursor-pointer" onClick={() => setActiveTab('home')}>
+          <Logo size="sm" />
+        </div>
         <div className="flex gap-4">
           {!user ? (
             <button 
