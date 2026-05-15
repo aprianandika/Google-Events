@@ -117,10 +117,97 @@ export const ExploreView = ({ cityName = 'Jakarta', onOpenMap }: { cityName?: st
       suggestions: [
         { id: 'bv1', title: 'Creative Street Art Festival', description: 'Festival seni jalanan tahunan berskala internasional di Braga.', votes: 567 },
       ]
+    },
+    'Semarang': {
+      zones: [
+        { name: 'Simpang Lima', vibe: 'Lively', pulse: 94, color: 'cyber-lime' },
+        { name: 'Kota Lama', vibe: 'Vintage', pulse: 82, color: 'blue-500' },
+        { name: 'Tembalang', vibe: 'Academic', pulse: 88, color: 'white' },
+      ],
+      explore: [
+        { id: 's1', type: 'job', title: 'Logistics Manager', subtitle: 'Perusahaan ekspor-impor di Pelabuhan Tanjung Emas.', tags: ['Logistics', 'Semarang', 'On-site'], energy: 85 },
+        { id: 's2', type: 'event', title: 'Semarang Night Carnival', subtitle: 'Parade kostum dan cahaya di sepanjang jalan protokol.', tags: ['Culture', 'Carnival'], energy: 92 },
+      ],
+      suggestions: [
+        { id: 'sv1', title: 'Old Town Digital Lab', description: 'Transformasi gedung tua menjadi pusat inkubasi startup digital.', votes: 245 },
+      ]
+    },
+    'Surabaya': {
+      zones: [
+        { name: 'Tunjungan', vibe: 'Historical', pulse: 96, color: 'cyber-lime' },
+        { name: 'Gubeng', vibe: 'Transit Hub', pulse: 84, color: 'blue-500' },
+        { name: 'Kenjeran', vibe: 'Coastal', pulse: 72, color: 'white' },
+      ],
+      explore: [
+        { id: 'sb1', type: 'job', title: 'Marine Engineer', subtitle: 'Galangan kapal di Surabaya mencari ahli mesin senior.', tags: ['Maritime', 'Engineering'], energy: 93 },
+        { id: 'sb2', type: 'community', title: 'Surabaya Tech Community', subtitle: 'Wadah silaturahmi tech-enthusiast di Kota Pahlawan.', tags: ['Tech', 'Community'], energy: 86 },
+      ],
+      suggestions: [
+        { id: 'sbv1', title: 'Kalimas River Tech Lighting', description: 'Sistem pencahayaan pintar sepanjang sungai Kalimas.', votes: 312 },
+      ]
+    },
+    'Denpasar': {
+      zones: [
+        { name: 'Renon', vibe: 'Administrative', pulse: 78, color: 'cyber-lime' },
+        { name: 'Sanur', vibe: 'Relieving', pulse: 85, color: 'blue-500' },
+        { name: 'Teuku Umar', vibe: 'Commercial', pulse: 92, color: 'white' },
+      ],
+      explore: [
+        { id: 'd1', type: 'job', title: 'Hospitality Manager', subtitle: 'Resort mewah di Sanur mencari manager berpengalaman.', tags: ['Tourism', 'Hospitality'], energy: 95 },
+        { id: 'd2', type: 'event', title: 'Bali Tech Nomad Meetup', subtitle: 'Kumpul bareng digital nomad dari seluruh penjuru dunia.', tags: ['Networking', 'Global'], energy: 89 },
+      ],
+      suggestions: [
+        { id: 'dv1', title: 'Green Energy Beach Club', description: 'Inisiatif beach club pertama dengan 100% energi terbarukan.', votes: 521 },
+      ]
+    },
+    'Medan': {
+      zones: [
+        { name: 'Kesawan', vibe: 'Heritage', pulse: 88, color: 'cyber-lime' },
+        { name: 'Medan Baru', vibe: 'Youthful', pulse: 94, color: 'blue-500' },
+        { name: 'Belawan', vibe: 'Industrial', pulse: 72, color: 'white' },
+      ],
+      explore: [
+        { id: 'med1', type: 'job', title: 'Agri-Tech Lead', subtitle: 'Inovasi perkebunan kelapa sawit berbasis AI di Sumatera Utara.', tags: ['Agriculture', 'AI'], energy: 88 },
+        { id: 'med2', type: 'community', title: 'Medan Culinary Explorer', subtitle: 'Komunitas pemburu kuliner legendaris di Medan.', tags: ['Food', 'Culture'], energy: 91 },
+      ],
+      suggestions: [
+        { id: 'medv1', title: 'Kesawan Smart Street Art', description: 'Integrasi AR pada mural-mural bersejarah di Kesawan.', votes: 267 },
+      ]
+    },
+    'Makassar': {
+      zones: [
+        { name: 'Losari', vibe: 'Iconic', pulse: 92, color: 'cyber-lime' },
+        { name: 'Panakkukang', vibe: 'Bustling', pulse: 95, color: 'blue-500' },
+        { name: 'Malino', vibe: 'Alpine', pulse: 68, color: 'white' },
+      ],
+      explore: [
+        { id: 'mks1', type: 'job', title: 'Logistics Analyst', subtitle: 'Optimasi rantai pasok di Pelabuhan Soekarno-Hatta Makassar.', tags: ['Logistics', 'Data'], energy: 84 },
+        { id: 'mks2', type: 'event', title: 'F8 Makassar', subtitle: 'Festival seni, makanan, dan hiburan terbesar di Indonesia Timur.', tags: ['Festival', 'BigEvent'], energy: 98 },
+      ],
+      suggestions: [
+        { id: 'mksv1', title: 'Floating Creative Market', description: 'Pasar kreatif terapung di sekitar Pantai Losari.', votes: 442 },
+      ]
     }
   };
 
-  const currentData = CITY_DATA[cityName] || CITY_DATA['Jakarta'];
+  const getFallbackData = (city: string) => ({
+    zones: [
+      { name: 'Pusat Kota', vibe: 'Active', pulse: 85, color: 'cyber-lime' },
+      { name: 'Kawasan Bisnis', vibe: 'Productive', pulse: 72, color: 'blue-500' },
+      { name: 'Sisi Kota', vibe: 'Local Vibe', pulse: 64, color: 'white' },
+    ],
+    explore: [
+      { id: `f1-${city}`, type: 'job', title: 'Local Growth Expert', subtitle: `Peluang membangun masa depan ekonomi di ${city}.`, tags: ['Growth', 'Local'], energy: 78 },
+      { id: `f2-${city}`, type: 'event', title: `${city} Digital Week`, subtitle: 'Mengenalkan potensi teknologi kepada komunitas lokal.', tags: ['Tech', 'Community'], energy: 82 },
+      { id: `f3-${city}`, type: 'community', title: `${city} Creators`, subtitle: 'Ruang kolaborasi untuk anak muda kreatif daerah.', tags: ['Creative', 'Startup'], energy: 74 },
+    ],
+    suggestions: [
+      { id: `fs1-${city}`, title: 'Smart Heritage Hub', description: `Inisiatif revitalisasi area sejarah di ${city} dengan teknologi.`, votes: 124 },
+      { id: `fs2-${city}`, title: 'Bio-Energy Market', description: 'Pasar ramah lingkungan yang menggunakan limbah lokal sebagai energi.', votes: 98 },
+    ]
+  });
+
+  const currentData = CITY_DATA[cityName] || getFallbackData(cityName);
 
   return (
     <div className="px-6 pt-24 pb-32">

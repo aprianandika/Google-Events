@@ -85,6 +85,48 @@ const getOpportunitiesForCity = (city: string): LocalPulse[] => {
     ];
   }
 
+  if (city === 'Semarang') {
+    return [
+      ...base,
+      {
+        id: 's1',
+        type: 'job' as OpportunityType,
+        title: 'Port Logistics Specialist',
+        subtitle: 'Managing complex export chains at Tanjung Emas.',
+        tags: ['Logistics', 'Maritime'],
+        energy: 82
+      }
+    ];
+  }
+
+  if (city === 'Surabaya') {
+    return [
+      ...base,
+      {
+        id: 'sb1',
+        type: 'job' as OpportunityType,
+        title: 'Heavy Industry Lead',
+        subtitle: 'Leading industrial transformation in Gresik-Surabaya hub.',
+        tags: ['Industry', 'Management'],
+        energy: 91
+      }
+    ];
+  }
+
+  if (city === 'Denpasar') {
+    return [
+      ...base,
+      {
+        id: 'dp1',
+        type: 'business' as OpportunityType,
+        title: 'Eco-Resort Collab',
+        subtitle: 'Opportunities for sustainable tourism providers in Sanur.',
+        tags: ['Tourism', 'Sustainability'],
+        energy: 88
+      }
+    ];
+  }
+
   if (city === 'Jakarta') {
     return [
       ...base,
@@ -99,11 +141,30 @@ const getOpportunitiesForCity = (city: string): LocalPulse[] => {
     ];
   }
 
-  return base;
+  // Fallback for all other cities to ensure energy and life in every region
+  return [
+    ...base,
+    {
+      id: `fg1-${city}`,
+      type: 'community' as OpportunityType,
+      title: `${city} Digital Lab`,
+      subtitle: `Membangun masa depan ${city} melalui kolaborasi desentralisasi.`,
+      tags: ['Inovasi', 'Lokal'],
+      energy: 75
+    },
+    {
+      id: `fg2-${city}`,
+      type: 'event' as OpportunityType,
+      title: `${city} Unity Summit`,
+      subtitle: 'Kumpulan kreator dan visioner lokal terbesar minggu ini.',
+      tags: ['Summit', 'Komunitas'],
+      energy: 84
+    }
+  ];
 };
 
 export default function App() {
-  const { user, loading: authLoading } = useAuth();
+  const { user, loading: authLoading, userProfile } = useAuth();
   const [activeTab, setActiveTab] = useState('home');
   const [showSplash, setShowSplash] = useState(true);
   const [showMacro, setShowMacro] = useState(false);
@@ -184,11 +245,24 @@ export default function App() {
               onClick={() => setActiveTab('profile')}
               className="px-4 h-10 glass-dark rounded-full flex items-center justify-center text-cyber-lime text-[10px] font-mono uppercase tracking-widest border border-cyber-lime/20 hover:bg-cyber-lime/10 transition-colors"
             >
-              Masuk
+              Daftar
             </button>
           ) : (
-            <div className="w-10 h-10 glass rounded-full flex items-center justify-center overflow-hidden border border-white/10 cursor-pointer" onClick={() => setActiveTab('profile')}>
-              <img src={user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`} alt="Avatar" className="w-full h-full object-cover" />
+            <div className="flex items-center gap-3">
+              <div className="hidden sm:block text-right">
+                <p className="text-[10px] font-mono text-white/40 uppercase tracking-widest leading-none mb-1">Jiwa Lokal</p>
+                <p className="text-xs font-bold text-white leading-none">{userProfile?.displayName || user.displayName || 'User'}</p>
+              </div>
+              <div 
+                className="w-10 h-10 glass rounded-full flex items-center justify-center overflow-hidden border border-cyber-lime/30 cursor-pointer shadow-[0_0_15px_rgba(223,255,0,0.2)]" 
+                onClick={() => setActiveTab('profile')}
+              >
+                <img 
+                  src={userProfile?.photoURL || user.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${user.uid}`} 
+                  alt="Avatar" 
+                  className="w-full h-full object-cover" 
+                />
+              </div>
             </div>
           )}
           <button 

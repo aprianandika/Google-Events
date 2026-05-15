@@ -38,14 +38,19 @@ export const ProfileView = () => {
           <div className="absolute inset-0 bg-gradient-to-b from-cyber-lime/5 to-transparent pointer-events-none" />
           
           <div className="relative mb-6">
-            <div className="w-24 h-24 rounded-full border-2 border-cyber-lime p-1 shadow-[0_0_30px_rgba(255, 49, 49, 0.2)]">
-               <img src={userProfile?.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${userProfile?.displayName || 'lucky'}`} className="w-full h-full rounded-full bg-white/10" alt="Profile" />
+            <div className="w-24 h-24 rounded-full border-2 border-cyber-lime p-1 shadow-[0_0_30px_rgba(223,255,0,0.3)]">
+               <img 
+                 src={userProfile?.photoURL || `https://api.dicebear.com/7.x/avataaars/svg?seed=${userProfile?.uid || 'lucky'}`} 
+                 className="w-full h-full rounded-full bg-white/10 object-cover" 
+                 alt="Profile" 
+               />
             </div>
             <div className="absolute -bottom-1 -right-1 bg-cyber-lime text-obsidian p-1.5 rounded-full shadow-lg">
                <ShieldCheck size={14} />
             </div>
           </div>
 
+          <p className="text-[10px] font-mono text-cyber-lime uppercase tracking-[0.3em] font-black mb-1">Identitas Jiwa Lokal</p>
           <h2 className="text-3xl font-display font-black text-white mb-1">{userProfile?.displayName || 'Jiwa Lokal'}</h2>
           <div className="flex items-center gap-2 text-white/40 font-mono text-[10px] uppercase tracking-widest mb-6">
             <MapPin size={12} className="text-cyber-lime" /> {userProfile?.city || 'Jakarta'}, Indonesia

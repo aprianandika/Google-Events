@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { MapPin, Zap, Users, Info, ChevronLeft, Search, Filter, Layers } from 'lucide-react';
+import { MapPin, Zap, Users, Info, ChevronLeft, Search, Filter, Layers, Utensils, Truck, Ship, Landmark, Sprout, Anchor } from 'lucide-react';
 import { APIProvider, Map, AdvancedMarker, useAdvancedMarkerRef, InfoWindow } from '@vis.gl/react-google-maps';
 
 interface RichZone {
   id: string;
   name: string;
-  richness: 'Teknologi' | 'Budaya' | 'Kreativitas' | 'Pariwisata' | 'Energi' | 'Industri';
+  richness: 'Teknologi' | 'Budaya' | 'Kreativitas' | 'Pariwisata' | 'Energi' | 'Industri' | 'Kuliner' | 'Logistik' | 'Maritim' | 'Kelautan' | 'Agrikultur' | 'Sejarah';
   description: string;
   energy: number;
   position: { lat: number; lng: number };
@@ -24,16 +24,44 @@ const hasValidKey = Boolean(API_KEY) &&
   !['YOUR_API_KEY', 'undefined', 'null', ''].includes(API_KEY);
 
 const RICH_ZONES: RichZone[] = [
-  { id: '1', name: 'Jakarta', richness: 'Teknologi', description: 'Pusat inovasi digital dan pusat data nasional.', energy: 98, position: { lat: -6.2088, lng: 106.8456 } },
+  { id: '1', name: 'Jakarta', richness: 'Teknologi', description: 'Pusat ekonomi digital dan inovasi nasional dengan ekosistem startup terbesar.', energy: 98, position: { lat: -6.2088, lng: 106.8456 } },
   { id: '2', name: 'Bandung', richness: 'Kreativitas', description: 'Kaya akan talenta desain dan startup kreatif.', energy: 92, position: { lat: -6.9175, lng: 107.6191 } },
   { id: '3', name: 'Yogyakarta', richness: 'Budaya', description: 'Pusat seni tradisional dan pendidikan kreatif.', energy: 85, position: { lat: -7.7956, lng: 110.3695 } },
   { id: '4', name: 'Surabaya', richness: 'Industri', description: 'Hub perdagangan internasional dan industri modern.', energy: 88, position: { lat: -7.2575, lng: 112.7521 } },
-  { id: '5', name: 'Bali', richness: 'Pariwisata', description: 'Destinasi global dengan ekonomi berbasis pariwisata.', energy: 95, position: { lat: -8.4095, lng: 115.1889 } },
+  { id: '5', name: 'Denpasar', richness: 'Pariwisata', description: 'Hub pariwisata global dan nomad digital.', energy: 95, position: { lat: -8.6705, lng: 115.2126 } },
   { id: '6', name: 'Balikpapan', richness: 'Energi', description: 'Pusat pengelolaan energi dan sumber daya alam.', energy: 82, position: { lat: -1.2654, lng: 116.8312 } },
   { id: '7', name: 'Medan', richness: 'Industri', description: 'Gerbang ekonomi wilayah barat Indonesia.', energy: 78, position: { lat: 3.5952, lng: 98.6722 } },
   { id: '8', name: 'Makassar', richness: 'Industri', description: 'Hub logistik dan ekonomi timur Indonesia.', energy: 76, position: { lat: -5.1476, lng: 119.4327 } },
-  { id: '9', name: 'Karawang', richness: 'Industri', description: 'Kawasan industri terbesar di Asia Tenggara dengan fokus manufaktur modern.', energy: 94, position: { lat: -6.3073, lng: 107.2995 } },
-  { id: '10', name: 'Magelang', richness: 'Budaya', description: 'Kota paku tanah Jawa dengan kekayaan warisan sejarah dunia.', energy: 81, position: { lat: -7.4706, lng: 110.2177 } },
+  { id: '9', name: 'Karawang', richness: 'Industri', description: 'Kawasan industri terbesar di Asia Tenggara.', energy: 94, position: { lat: -6.3073, lng: 107.2995 } },
+  { id: '10', name: 'Magelang', richness: 'Budaya', description: 'Kota paku tanah Jawa dengan kekayaan warisan sejarah.', energy: 81, position: { lat: -7.4706, lng: 110.2177 } },
+  { id: '11', name: 'Semarang', richness: 'Industri', description: 'Hub manufaktur dan pelabuhan utama Jawa Tengah.', energy: 84, position: { lat: -6.9667, lng: 110.4167 } },
+  { id: '12', name: 'Solo', richness: 'Budaya', description: 'Pusat tekstil dan pelestarian budaya Jawa.', energy: 82, position: { lat: -7.5755, lng: 110.8243 } },
+  { id: '13', name: 'Malang', richness: 'Teknologi', description: 'Kota pendidikan dengan komunitas pengembang game yang kuat.', energy: 86, position: { lat: -7.9839, lng: 112.6214 } },
+  { id: '14', name: 'Bekasi', richness: 'Industri', description: 'Kota industri penyangga ibukota dengan vitalitas ekonomi tinggi.', energy: 89, position: { lat: -6.2383, lng: 106.9756 } },
+  { id: '15', name: 'Bogor', richness: 'Pariwisata', description: 'Kota hujan dengan fokus pada agrowisata dan riset botani.', energy: 80, position: { lat: -6.5971, lng: 106.7974 } },
+  { id: '16', name: 'Tangerang', richness: 'Teknologi', description: 'Hub transportasi udara dan perkembangan fintech.', energy: 91, position: { lat: -6.1783, lng: 106.6319 } },
+  { id: '17', name: 'Serang', richness: 'Industri', description: 'Ibukota Banten dengan kawasan industri strategis.', energy: 75, position: { lat: -6.1104, lng: 106.1623 } },
+  { id: '18', name: 'Samarinda', richness: 'Pariwisata', description: 'Gerbang menuju jantung Kalimantan dan pariwisata sungai.', energy: 74, position: { lat: -0.5021, lng: 117.1536 } },
+  { id: '19', name: 'Banda Aceh', richness: 'Budaya', description: 'Serambi Mekkah dengan potensi ekonomi syariah.', energy: 72, position: { lat: 5.5483, lng: 95.3238 } },
+  { id: '20', name: 'Padang', richness: 'Kuliner', description: 'Gerbang ekonomi wilayah barat dengan kekayaan rempah.', energy: 75, position: { lat: -0.9471, lng: 100.4172 } },
+  { id: '21', name: 'Palembang', richness: 'Industri', description: 'Kota tertua dengan potensi industri manufaktur.', energy: 76, position: { lat: -2.9761, lng: 104.7754 } },
+  { id: '22', name: 'Pekanbaru', richness: 'Energi', description: 'Hub energi dan kelapa sawit di Sumatera.', energy: 77, position: { lat: 0.5071, lng: 101.4478 } },
+  { id: '23', name: 'Batam', richness: 'Logistik', description: 'Kawasan ekonomi khusus perbatasan mancanegara.', energy: 90, position: { lat: 1.1301, lng: 104.0542 } },
+  { id: '24', name: 'Bandar Lampung', richness: 'Logistik', description: 'Gerbang masuk utama logistik pulau Sumatera.', energy: 74, position: { lat: -5.4292, lng: 105.2611 } },
+  { id: '25', name: 'Mataram', richness: 'Pariwisata', description: 'Pusat wisata halal dan sirkuit internasional NTB.', energy: 79, position: { lat: -8.5775, lng: 116.0961 } },
+  { id: '26', name: 'Kupang', richness: 'Maritim', description: 'Gerbang selatan Indonesia dengan potensi maritim.', energy: 70, position: { lat: -10.1772, lng: 123.6070 } },
+  { id: '27', name: 'Pontianak', richness: 'Budaya', description: 'Kota khatulistiwa dengan potensi perdagangan sungai.', energy: 73, position: { lat: -0.0263, lng: 109.3425 } },
+  { id: '28', name: 'Banjarmasin', richness: 'Kreativitas', description: 'Kota seribu sungai dengan kekayaan budaya air.', energy: 74, position: { lat: -3.3167, lng: 114.5900 } },
+  { id: '29', name: 'Manado', richness: 'Kelautan', description: 'Pusat ekonomi dengan potensi bawah laut dunia.', energy: 78, position: { lat: 1.4748, lng: 124.8484 } },
+  { id: '30', name: 'Gorontalo', richness: 'Agrikultur', description: 'Kota jagung dengan kekayaan sumber daya maritim.', energy: 68, position: { lat: 0.5435, lng: 123.0568 } },
+  { id: '31', name: 'Palu', richness: 'Energi', description: 'Hub industri dengan potensi tambang yang besar.', energy: 71, position: { lat: -0.8917, lng: 119.8707 } },
+  { id: '32', name: 'Kendari', richness: 'Energi', description: 'Hub pertambangan nikel di Sulawesi Tenggara.', energy: 73, position: { lat: -3.9985, lng: 122.5129 } },
+  { id: '33', name: 'Ambon', richness: 'Maritim', description: 'Kota musik dengan potensi perikanan luar biasa.', energy: 72, position: { lat: -3.6954, lng: 128.1814 } },
+  { id: '34', name: 'Ternate', richness: 'Budaya', description: 'Kota rempah dengan sejarah panjang perdagangan dunia.', energy: 71, position: { lat: 0.7906, lng: 127.3845 } },
+  { id: '35', name: 'Jayapura', richness: 'Budaya', description: 'Pusat administrasi dan ekonomi tanah Papua.', energy: 73, position: { lat: -2.5916, lng: 140.6690 } },
+  { id: '36', name: 'Manokwari', richness: 'Sejarah', description: 'Kota peradaban tertua di dataran Papua.', energy: 69, position: { lat: -0.8615, lng: 134.0620 } },
+  { id: '37', name: 'Sorong', richness: 'Energi', description: 'Gerbang migas dan akses menuju Raja Ampat.', energy: 75, position: { lat: -0.8765, lng: 131.2558 } },
+  { id: '38', name: 'Merauke', richness: 'Agrikultur', description: 'Lumbung pangan nasional di ujung timur nusantara.', energy: 72, position: { lat: -8.4900, lng: 140.4000 } },
 ];
 
 const MAP_ID = "DEMO_MAP_ID"; // Using a demo Map ID for Advanced Markers compatibility
@@ -128,6 +156,12 @@ export const MacroMapView = ({ onBack, onSelectCity }: { onBack: () => void, onS
                     {zone.richness === 'Pariwisata' && <MapPin size={20} className="text-cyber-lime" />}
                     {zone.richness === 'Energi' && <Zap size={20} className="text-cyber-lime" />}
                     {zone.richness === 'Industri' && <Layers size={20} className="text-cyber-lime" />}
+                    {zone.richness === 'Kuliner' && <Utensils size={20} className="text-cyber-lime" />}
+                    {zone.richness === 'Logistik' && <Truck size={20} className="text-cyber-lime" />}
+                    {zone.richness === 'Maritim' && <Anchor size={20} className="text-cyber-lime" />}
+                    {zone.richness === 'Kelautan' && <Ship size={20} className="text-cyber-lime" />}
+                    {zone.richness === 'Agrikultur' && <Sprout size={20} className="text-cyber-lime" />}
+                    {zone.richness === 'Sejarah' && <Landmark size={20} className="text-cyber-lime" />}
                   </div>
                   
                   {/* Shadow/Glow under marker */}

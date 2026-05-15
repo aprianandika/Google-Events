@@ -81,10 +81,27 @@ export const SocialView = ({ cityName = 'Jakarta' }: { cityName?: string }) => {
     ],
     'Magelang': [
       { id: 'dm1', author: 'Eco Traveler', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Eco', content: 'Sunset terbaik di Borobudur hari ini! Komunitas fotografi lagi kumpul di dekat gerbang masuk.', time: '30 menit yang lalu', likes: 156, comments: 24, tags: ['Magelang', 'Photography'] }
+    ],
+    'Bandung': [
+      { id: 'db1', author: 'Dedi Fashion', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Dedi', content: 'Braga malam ini vibes-nya asik banget buat hunting konten street photography. Ada yang mau join?', time: '45 menit yang lalu', likes: 210, comments: 56, tags: ['Bandung', 'StreetPhotography'] }
+    ],
+    'Surabaya': [
+      { id: 'dsb1', author: 'Arek Tech', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Arek', content: 'Info meetup startup di Surabaya dong? Pengen networking sama founder-founder lokal.', time: '1 jam yang lalu', likes: 132, comments: 31, tags: ['Networking', 'StartupSurabaya'] }
+    ],
+    'Denpasar': [
+      { id: 'ddp1', author: 'Wayan Digital', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Wayan', content: 'Co-working space di Sanur yang internetnya kenceng dan view-nya oke ada rekomendasi?', time: '3 jam yang lalu', likes: 88, comments: 19, tags: ['DigitalNomad', 'Bali'] }
+    ],
+    'Medan': [
+      { id: 'dmd1', author: 'Horas Dev', avatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Horas', content: 'Workshop UI/UX besok di Medan Baru. Slot sisa sedikit lagi gaesss!', time: '6 jam yang lalu', likes: 145, comments: 28, tags: ['UIUX', 'MedanEvents'] }
     ]
   };
 
-  const currentDiscussions = DISCUSSIONS_MOCK[cityName] || DISCUSSIONS_MOCK['Jakarta'];
+  const getFallbackDiscussions = (city: string) => [
+    { id: `fd1-${city}`, author: 'Lokal Genius', avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${city}`, content: `Halo warga ${city}! Ada yang tahu event teknologi atau komunitas kreatif paling aktif di sini?`, time: 'Baru saja', likes: 12, comments: 4, tags: [city, 'Social'] },
+    { id: `fd2-${city}`, author: 'Anak Daerah', avatar: `https://api.dicebear.com/7.x/avataaars/svg?seed=${city}-2`, content: `Mencari partner kolaborasi untuk membangun startup berbasis kearifan lokal ${city}. PM ya!`, time: '1 jam yang lalu', likes: 24, comments: 7, tags: ['Collaboration', city] }
+  ];
+
+  const currentDiscussions = DISCUSSIONS_MOCK[cityName] || getFallbackDiscussions(cityName);
 
   return (
     <div className="px-6 pt-24 pb-32">
